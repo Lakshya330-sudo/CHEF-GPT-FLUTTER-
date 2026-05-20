@@ -156,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             },
                             style: TextButton.styleFrom(
-                              foregroundColor: charcoalInk.withOpacity(0.7),
+                              foregroundColor: charcoalInk.withValues(alpha: 0.7),
                             ),
                             child: const Text(
                               'Forgot Password?',
@@ -260,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextStyle(
-                  color: charcoalInk.withOpacity(0.5),
+                  color: charcoalInk.withValues(alpha: 0.5),
                   fontWeight: FontWeight.w500,
                 ),
                 border: InputBorder.none,

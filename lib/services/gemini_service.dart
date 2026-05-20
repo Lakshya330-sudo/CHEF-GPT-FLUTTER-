@@ -3,11 +3,10 @@ import 'dart:typed_data';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-/// ─────────────────────────────────────────────────────────────────────────────
-/// Replace the placeholder below with your actual Gemini API key.
-/// Get yours free at: https://aistudio.google.com/app/apikey
-/// ─────────────────────────────────────────────────────────────────────────────
-const String _kGeminiApiKey = 'AIzaSyDejlvVKKY6faj5k6GWT2NbiMpTw9mv-Pk';
+const String _kGeminiApiKey = String.fromEnvironment(
+  'GEMINI_API_KEY',
+  defaultValue: 'YOUR_GEMINI_API_KEY_HERE',
+);
 
 /// Maximum number of automatic retries for transient failures.
 const int _kMaxRetries = 3;

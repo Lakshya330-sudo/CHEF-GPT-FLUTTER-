@@ -140,7 +140,7 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
                                   shadowColor: spiceRed.withValues(alpha: 0.4),
                                 ),
                                 onPressed: () {
-                                  // TODO: persist selections
+                                  
                                   Navigator.pop(context);
                                 },
                                 child: const Text(
@@ -260,12 +260,11 @@ class _DietOption {
   final String label;
   final String? assetPath;
   final bool isRasterImage;
-  bool selected;
+  bool selected = false;
 
   _DietOption({
     required this.label,
     required this.assetPath,
     this.isRasterImage = false,
-    this.selected = false,
   });
 }

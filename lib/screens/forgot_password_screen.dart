@@ -237,7 +237,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                 hintText: hintText,
                 hintStyle: TextStyle(
                   fontFamily: 'Poppins',
-                  color: charcoalInk.withOpacity(0.5),
+                  color: charcoalInk.withValues(alpha: 0.5),
                   fontWeight: FontWeight.w500,
                 ),
                 border: InputBorder.none,

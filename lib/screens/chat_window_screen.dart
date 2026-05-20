@@ -392,7 +392,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
       controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
       itemCount: total,
-      separatorBuilder: (_, __) => const SizedBox(height: 14),
+      separatorBuilder: (_, _) => const SizedBox(height: 14),
       itemBuilder: (context, i) {
         if (i == _messages.length) return _buildThinkingRow();
         final msg = _messages[i];
@@ -485,7 +485,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
         const SizedBox(width: 12),
         AnimatedBuilder(
           animation: _dotsAnim,
-          builder: (_, __) => Text(
+          builder: (_, _) => Text(
             'Thinking${'.' * _dotsAnim.value}',
             style: const TextStyle(
               fontFamily: 'Poppins',
@@ -576,7 +576,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
               // ── Send button (shows when text entered) OR mic ──
               ValueListenableBuilder<TextEditingValue>(
                 valueListenable: _inputController,
-                builder: (_, value, __) {
+                builder: (_, value, _) {
                   final hasText = value.text.trim().isNotEmpty;
                   return GestureDetector(
                     onTap: hasText ? _sendMessage : _toggleListening,
@@ -664,7 +664,7 @@ class _PulsingDotState extends State<_PulsingDot>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _anim,
-      builder: (_, __) => Opacity(
+      builder: (_, _) => Opacity(
         opacity: _anim.value,
         child: Container(
           width: 10,

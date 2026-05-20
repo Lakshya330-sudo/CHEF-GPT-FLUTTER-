@@ -315,7 +315,7 @@ class _SignupScreenState extends State<SignupScreen> {
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextStyle(
-                  color: charcoalInk.withOpacity(0.5),
+                  color: charcoalInk.withValues(alpha: 0.5),
                   fontWeight: FontWeight.w500,
                 ),
                 border: InputBorder.none,

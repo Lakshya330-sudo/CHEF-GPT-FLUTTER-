@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen>
   Animation<double>? _menuCardsFade;
   Animation<Offset>? _menuCardsSlide;
 
-  bool _animationsReady = false;
 
   @override
   void initState() {
@@ -108,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen>
       curve: Curves.easeOut,
     ));
 
-    _animationsReady = true;
 
     // Fire them with stagger delays
     _greetingController!.forward();
@@ -419,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen>
                     source: ImageSource.gallery,
                     imageQuality: 90,
                   );
-                  if (image != null && mounted) {
+                  if (image != null && context.mounted) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -438,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen>
                 subtitle: 'Take a photo right now',
                 onTap: () {
                   Navigator.pop(context);
-                  // TODO: launch camera
+                  
                 },
               ),
             ],
