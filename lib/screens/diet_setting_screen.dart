@@ -23,7 +23,7 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
     _DietOption(label: 'Low Carbs', assetPath: 'assets/images/diet_low_carbs.svg'),
     _DietOption(label: 'Gluten-Free', assetPath: 'assets/images/diet_gluten_free.svg'),
     _DietOption(label: 'Fasting', assetPath: 'assets/images/diet_fasting.svg'),
-    _DietOption(label: 'Low salt', assetPath: 'assets/images/diet_low_salt.png', isRasterImage: true),
+    _DietOption(label: 'Low salt', assetPath: 'assets/images/diet_low_salt.svg'),
   ];
 
   @override
@@ -198,15 +198,10 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
                   width: 52,
                   height: 52,
                   child: option.assetPath != null
-                      ? (option.isRasterImage
-                          ? Image.asset(
-                              option.assetPath!,
-                              fit: BoxFit.contain,
-                            )
-                          : SvgPicture.asset(
-                              option.assetPath!,
-                              fit: BoxFit.contain,
-                            ))
+                      ? SvgPicture.asset(
+                          option.assetPath!,
+                          fit: BoxFit.contain,
+                        )
                       : const Icon(
                           Icons.local_dining_rounded,
                           size: 36,
@@ -259,12 +254,10 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
 class _DietOption {
   final String label;
   final String? assetPath;
-  final bool isRasterImage;
   bool selected = false;
 
   _DietOption({
     required this.label,
     required this.assetPath,
-    this.isRasterImage = false,
   });
 }

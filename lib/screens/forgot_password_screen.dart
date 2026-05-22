@@ -27,6 +27,38 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
     super.dispose();
   }
 
+  void _validate(BuildContext context) {
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      _showError(context, 'Please fill in all password fields');
+      return;
+    }
+    if (newPassword.length < 6) {
+      _showError(context, 'Password must be at least 6 characters');
+      return;
+    }
+    if (newPassword != confirmPassword) {
+      _showError(context, 'Passwords do not match');
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Password reset successful! Please login with your new password.'),
+        backgroundColor: charcoalInk,
+      ),
+    );
+    Navigator.pop(context);
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: spiceRed),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,27 +148,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                       width: double.infinity,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_newPasswordController.text.isEmpty ||
-                              _confirmPasswordController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please fill in all password fields'),
-                                backgroundColor: spiceRed,
-                              ),
-                            );
-                          } else {
-                            // Successful validation
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Password reset successful! Please login with your new password.'),
-                                backgroundColor: charcoalInk,
-                              ),
-                            );
-                            Navigator.pop(context);
-                          }
-                        },
+                        onPressed: () => _validate(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: spiceRed,
                           foregroundColor: Colors.white,

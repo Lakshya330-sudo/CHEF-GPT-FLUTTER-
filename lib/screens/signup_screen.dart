@@ -30,6 +30,46 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(email.trim());
+  }
+
+  void _validate(BuildContext context) {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showError(context, 'Please fill in all fields');
+      return;
+    }
+    if (name.length < 2) {
+      _showError(context, 'Please enter your full name');
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      _showError(context, 'Please enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      _showError(context, 'Password must be at least 6 characters');
+      return;
+    }
+    if (!_agreeToTOS) {
+      _showError(context, 'Please agree to the Terms of Service');
+      return;
+    }
+
+    Navigator.pop(context);
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: spiceRed),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,31 +153,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       width: double.infinity,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_nameController.text.isNotEmpty &&
-                              _emailController.text.isNotEmpty &&
-                              _passwordController.text.isNotEmpty) {
-                            if (_agreeToTOS) {
-                              // Success: Navigate back
-                              Navigator.pop(context);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please agree to the Terms of Service'),
-                                  backgroundColor: spiceRed,
-                                ),
-                              );
-                            }
-                          } else {
-                            // Validation failed
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please fill in all fields'),
-                                backgroundColor: spiceRed,
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: () => _validate(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: spiceRed,
                           foregroundColor: Colors.white,

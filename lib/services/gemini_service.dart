@@ -25,12 +25,24 @@ class GeminiService {
       model: _model,
       apiKey: _kGeminiApiKey,
       systemInstruction: Content.system(
-        'You are ChefGPT, a friendly AI sous-chef. '
-        'When a user shares a photo of their ingredients or kitchen, '
-        'analyse what you see and suggest creative, practical recipes '
-        'tailored to their dietary preferences. '
-        'Keep answers concise, warm, and encouraging. '
-        'Format recipe suggestions clearly with ingredients and short steps.',
+        'Tu ChefGPT hai — ek expert Indian home chef aur AI assistant. '
+        'Jab bhi user koi image share kare, sabse pehle us image mein '
+        'dikhne wale saare ingredients ko dhyan se identify kar. '
+        'Phir sirf unhi identified ingredients aur common Indian pantry '
+        'staples (jaise atta, chawal, dal, haldi, jeera, sarson, laal mirch, '
+        'dhaniya powder, garam masala, namak, tel, pyaaz, lahsun, adrak, '
+        'tamatar) ka use karke recipes suggest kar. '
+        'Jo ingredient image mein nahi hai aur pantry staple bhi nahi hai, '
+        'use recipe mein mat daalna. '
+        'Mostly Indian dishes suggest kar '
+        'Western dishes bahut kam suggest karna, aur sirf tab jab ingredients '
+        'clearly western hon. '
+        'Apna saara response Hinglish mein de — matlab Hindi aur English '
+        'ka mix, jaise aam Indian log baat karte hain. '
+        'Tone warm, encouraging aur ghar jaisi rakhna. '
+        'Recipe ka format clear rakho: ingredients list aur short steps. '
+        'IMPORTANT: Do NOT use any markdown formatting — no *, **, #, ##, '
+        '- bullet points, or backticks. Write in plain text only.',
       ),
     );
     _chat = _generativeModel.startChat();
@@ -92,6 +104,27 @@ class GeminiService {
     return '😕 Something went wrong. Please try again in a moment.';
   }
 
+  // ── Markdown stripper ────────────────────────────────────────────────────
+  /// Removes common markdown symbols from AI responses so they render as
+  /// clean plain text in the chat UI.
+  String _stripMarkdown(String text) {
+    return text
+        // Remove heading markers (## Heading)
+        .replaceAll(RegExp(r'^#{1,6}\s*', multiLine: true), '')
+        // Remove bold/italic (**, *, __, _)
+        .replaceAll(RegExp(r'\*{1,3}'), '')
+        .replaceAll(RegExp(r'_{1,2}'), '')
+        // Remove inline code (` backtick`)
+        .replaceAll(RegExp(r'`{1,3}'), '')
+        // Remove leading bullet/dash markers (- item or * item)
+        .replaceAll(RegExp(r'^[\-\*]\s+', multiLine: true), '')
+        // Remove numbered list markers (1. 2. etc)
+        .replaceAll(RegExp(r'^\d+\.\s+', multiLine: true), '')
+        // Collapse multiple blank lines into one
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n')
+        .trim();
+  }
+
   // ── Retry helper ──────────────────────────────────────────────────────────
   Future<String> _withRetry(Future<String> Function() action) async {
     for (int attempt = 0; attempt <= _kMaxRetries; attempt++) {
@@ -126,7 +159,7 @@ class GeminiService {
     }
     return _withRetry(() async {
       final response = await _chat.sendMessage(Content.text(message));
-      return response.text ?? '(No response)';
+      return _stripMarkdown(response.text ?? '(No response)');
     });
   }
 
@@ -147,7 +180,7 @@ class GeminiService {
           TextPart(text),
         ]),
       );
-      return response.text ?? '(No response)';
+      return _stripMarkdown(response.text ?? '(No response)');
     });
   }
 }

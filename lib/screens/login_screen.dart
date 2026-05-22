@@ -29,6 +29,40 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(email.trim());
+  }
+
+  void _validate(BuildContext context) {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showError(context, 'Please fill in all fields');
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      _showError(context, 'Please enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      _showError(context, 'Password must be at least 6 characters');
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: spiceRed),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,24 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             height: 60,
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (_emailController.text.isNotEmpty &&
-                                    _passwordController.text.isNotEmpty) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Please fill in all fields'),
-                                      backgroundColor: spiceRed,
-                                    ),
-                                  );
-                                }
-                              },
+                              onPressed: () => _validate(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: spiceRed,
                                 foregroundColor: Colors.white,
