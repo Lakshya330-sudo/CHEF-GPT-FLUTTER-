@@ -131,7 +131,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                     const SizedBox(height: 16),
                     // Confirm Password field
                     _buildInputField(
-                      hintText: 'Password',
+                      hintText: 'Confirm Password',
                       iconAsset: 'assets/images/lock.svg',
                       obscureText: _obscureConfirmPassword,
                       controller: _confirmPasswordController,

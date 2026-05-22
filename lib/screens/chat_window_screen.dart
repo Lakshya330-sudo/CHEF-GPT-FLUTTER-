@@ -470,7 +470,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
         ),
         child: Text(
           text,
-          textAlign: isUser ? TextAlign.center : TextAlign.start,
+          textAlign: TextAlign.start,
           style: const TextStyle(
             fontFamily: 'Poppins',
             fontSize: 14,
