@@ -133,7 +133,7 @@ class _AnalyseScreenState extends State<AnalyseScreen> {
 
                           // ── Description label ──
                           const Text(
-                            'Description box',
+                            'Anything else?',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 22,
