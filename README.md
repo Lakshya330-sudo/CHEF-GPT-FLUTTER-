@@ -233,5 +233,5 @@ This project is for educational and personal use. Please ensure you comply with 
 ---
 
 <p align="center">
-  Made with ❤️ and 🍛 by <strong>Sarthak</strong>
+  Made with ❤️ and 🍛 by <strong>Lakshya</strong>
 </p>

@@ -20,13 +20,16 @@ class GeminiService {
 
   bool get isConfigured => _kGeminiApiKey != 'YOUR_GEMINI_API_KEY_HERE';
 
-  GeminiService() {
+  GeminiService({List<String> dietPreferences = const []}) {
+    final String dietPrompt = dietPreferences.isNotEmpty
+        ? ' User ki diet preferences hain: ${dietPreferences.join(', ')}. In preferences ka strictly dhyan rakhna, inke rules ko violate mat karna (jaise agar Vegan hai to meat/dairy/paneer/ghee mat suggest karna, low salt hai to namak kam ya substitute use karna). '
+        : '';
     _generativeModel = GenerativeModel(
       model: _model,
       apiKey: _kGeminiApiKey,
       systemInstruction: Content.system(
-        'Tu ChefGPT hai — ek expert Indian home chef aur AI assistant. '
-        'Jab bhi user koi image share kare, sabse pehle us image mein '
+        'Tu ChefGPT hai — ek expert Indian home chef aur AI assistant.$dietPrompt'
+        ' Jab bhi user koi image share kare, sabse pehle us image mein '
         'dikhne wale saare ingredients ko dhyan se identify kar. '
         'Phir sirf unhi identified ingredients aur common Indian pantry '
         'staples (jaise atta, chawal, dal, haldi, jeera, sarson, laal mirch, '

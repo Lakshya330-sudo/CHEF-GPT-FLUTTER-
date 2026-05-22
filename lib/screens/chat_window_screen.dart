@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/gemini_service.dart';
 
 class ChatWindowScreen extends StatefulWidget {
@@ -55,6 +56,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
 
   // Gemini
   late final GeminiService _gemini;
+  bool _isInitialized = false;
 
   // Chat messages
   final List<_ChatMessage> _messages = [];
@@ -76,9 +78,19 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
     _dotsAnim = IntTween(begin: 1, end: 10).animate(_dotsController);
 
     _speech  = stt.SpeechToText();
-    _gemini  = GeminiService();
 
-    // Kick off the initial analysis automatically
+    _initChat();
+  }
+
+  Future<void> _initChat() async {
+    final prefs = await SharedPreferences.getInstance();
+    final dietPreferences = prefs.getStringList('selected_diets') ?? [];
+    _gemini = GeminiService(dietPreferences: dietPreferences);
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
     _startInitialAnalysis();
   }
 
@@ -122,6 +134,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
 
   // ── Send a follow-up text message ─────────────────────────────────────────
   Future<void> _sendMessage() async {
+    if (!_isInitialized) return;
     final String text = _inputController.text.trim();
     if (text.isEmpty || _isThinking) return;
 
@@ -537,7 +550,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
             children: [
               // ── + button ──
               GestureDetector(
-                onTap: _showAttachMenu,
+                onTap: _isInitialized ? _showAttachMenu : null,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 14.0),
                   child: Container(
@@ -555,14 +568,16 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
               Expanded(
                 child: TextField(
                   controller: _inputController,
+                  enabled: _isInitialized,
                   onSubmitted: (_) => _sendMessage(),
                   style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 15,
                       color: charcoalInk),
                   decoration: InputDecoration(
-                    hintText:
-                        _isListening ? 'Speaking…' : 'Ask something…',
+                    hintText: !_isInitialized
+                        ? 'Initializing ChefGPT…'
+                        : (_isListening ? 'Speaking…' : 'Ask something…'),
                     hintStyle: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 14,
@@ -579,7 +594,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen>
                 builder: (_, value, _) {
                   final hasText = value.text.trim().isNotEmpty;
                   return GestureDetector(
-                    onTap: hasText ? _sendMessage : _toggleListening,
+                    onTap: _isInitialized
+                        ? (hasText ? _sendMessage : _toggleListening)
+                        : null,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 14.0),
                       child: AnimatedSwitcher(

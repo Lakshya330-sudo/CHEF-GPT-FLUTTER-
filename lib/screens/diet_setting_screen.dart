@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class DietSettingScreen extends StatefulWidget {
   const DietSettingScreen({super.key});
@@ -29,6 +31,7 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
   @override
   void initState() {
     super.initState();
+    _loadSettings();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -36,6 +39,26 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
       ),
     );
   }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedDiets = prefs.getStringList('selected_diets') ?? [];
+    setState(() {
+      for (var option in _options) {
+        option.selected = savedDiets.contains(option.label);
+      }
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final selectedDiets = _options
+        .where((opt) => opt.selected)
+        .map((opt) => opt.label)
+        .toList();
+    await prefs.setStringList('selected_diets', selectedDiets);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +162,12 @@ class _DietSettingScreenState extends State<DietSettingScreen> {
                                   elevation: 4,
                                   shadowColor: spiceRed.withValues(alpha: 0.4),
                                 ),
-                                onPressed: () {
-                                  
-                                  Navigator.pop(context);
-                                },
+                                 onPressed: () async {
+                                   await _saveSettings();
+                                   if (context.mounted) {
+                                     Navigator.pop(context);
+                                   }
+                                 },
                                 child: const Text(
                                   'Save Setting',
                                   style: TextStyle(
