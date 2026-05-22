@@ -434,9 +434,21 @@ class _HomeScreenState extends State<HomeScreen>
                 icon: Icons.camera_alt_rounded,
                 label: 'Use Camera',
                 subtitle: 'Take a photo right now',
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  
+                  final picker = ImagePicker();
+                  final XFile? image = await picker.pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 90,
+                  );
+                  if (image != null && context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AnalyseScreen(imagePath: image.path),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
